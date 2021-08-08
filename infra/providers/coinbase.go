@@ -1,7 +1,8 @@
-package coinbase
+package providers
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
@@ -14,10 +15,34 @@ const (
 	matchesChannelName   = "matches"
 )
 
+type coinbaseChannel struct {
+	Name     string   `json:"name"`
+	Products []string `json:"product_ids"`
+}
+
+// coinbaseRequestMessage defines the request to be sent to Coinbase Websocket
+type coinbaseRequestMessage struct {
+	Type     string            `json:"type"`
+	Channels []coinbaseChannel `json:"channels"`
+}
+
+// coinbaseResponseMessage defines the response coming from Coinbase Websocket
+type coinbaseResponseMessage struct {
+	Type      string    `json:"type"`
+	TradeID   int       `json:"trade_id"`
+	ProductID string    `json:"product_id"`
+	Size      string    `json:"size"`
+	Price     string    `json:"price"`
+	Side      string    `json:"side"`
+	Time      time.Time `json:"time,string"`
+}
+
+// Coinbase defined the Coinbase trading provider
 type Coinbase struct {
 	conn *websocket.Conn
 }
 
+// NewCoinbase creates a new Coinbase client struct
 func NewCoinbase() (*Coinbase, error) {
 	var wsDialer websocket.Dialer
 
@@ -29,15 +54,16 @@ func NewCoinbase() (*Coinbase, error) {
 	return &Coinbase{conn: conn}, nil
 }
 
+// Subscribe subscribes to receive data from Matches channel
 func (c Coinbase) Subscribe(pairs []domain.TradingPair) error {
 	var products []string
 	for _, v := range pairs {
 		products = append(products, v.String())
 	}
 
-	request := Request{
+	request := coinbaseRequestMessage{
 		Type: messageSubscribeType,
-		Channels: []Channel{
+		Channels: []coinbaseChannel{
 			{
 				Name:     matchesChannelName,
 				Products: products,
@@ -46,15 +72,16 @@ func (c Coinbase) Subscribe(pairs []domain.TradingPair) error {
 	}
 
 	if err := c.conn.WriteJSON(request); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("error to subscribe to %v", products))
+		return errors.Wrap(err, fmt.Sprintf("error to subscribe with %v pairs", products))
 	}
 
 	return nil
 }
 
+// Pull pulls trading messages, send them to the received channel
 func (c Coinbase) Pull(ch chan domain.Trading) error {
 	for {
-		message := Response{}
+		message := coinbaseResponseMessage{}
 		if err := c.conn.ReadJSON(&message); err != nil {
 			close(ch)
 			return errors.Wrap(err, "error to read message from websocket")

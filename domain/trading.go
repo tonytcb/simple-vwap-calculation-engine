@@ -8,9 +8,9 @@ import (
 )
 
 type Trading struct {
-	TradeID   int
+	ID        int
 	ProductID string
-	Size      float64
+	Share     float64
 	Price     float64
 	Time      time.Time
 }
@@ -26,5 +26,5 @@ func NewTrading(tradeID int, productID string, size string, price string, time t
 		return Trading{}, errors.Wrap(err, "error to convert size to float64")
 	}
 
-	return Trading{TradeID: tradeID, ProductID: productID, Size: sizeNumber, Price: priceNumber, Time: time}, nil
+	return Trading{ID: tradeID, ProductID: productID, Share: sizeNumber, Price: priceNumber, Time: time}, nil
 }
