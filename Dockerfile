@@ -8,5 +8,7 @@ WORKDIR /app
 
 COPY . .
 
+RUN apk add build-base
+
 RUN go mod download
 RUN go mod vendor

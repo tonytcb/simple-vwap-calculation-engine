@@ -10,14 +10,14 @@ import (
 // Trading defines the Trading domain
 type Trading struct {
 	ID        int
-	ProductID string
+	Pair      string
 	Share     float64
 	Price     float64
-	Time      time.Time
+	CreatedAt time.Time
 }
 
 // NewTrading builds a new Trading structure ensuring its values
-func NewTrading(tradeID int, productID string, size string, price string, time time.Time) (Trading, error) {
+func NewTrading(tradeID int, pair string, size string, price string, createdAt time.Time) (Trading, error) {
 	sizeNumber, err := strconv.ParseFloat(size, 64)
 	if err != nil {
 		return Trading{}, errors.Wrap(err, "error to convert size to float64")
@@ -28,5 +28,5 @@ func NewTrading(tradeID int, productID string, size string, price string, time t
 		return Trading{}, errors.Wrap(err, "error to convert price to float64")
 	}
 
-	return Trading{ID: tradeID, ProductID: productID, Share: sizeNumber, Price: priceNumber, Time: time}, nil
+	return Trading{ID: tradeID, Pair: pair, Share: sizeNumber, Price: priceNumber, CreatedAt: createdAt}, nil
 }

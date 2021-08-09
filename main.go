@@ -37,7 +37,7 @@ func main() {
 }
 
 func maxTradingsParameter() int {
-	if os.Args[1] == "" {
+	if (len(os.Args) == 1) || (os.Args[1] == "") {
 		return defaultMaxTradings
 	}
 

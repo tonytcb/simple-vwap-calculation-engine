@@ -17,7 +17,7 @@ type Notifier interface {
 	Notify(domain.Trading, float64) error
 }
 
-// VWAP holds dependencies to calculate the VWAP on-demand
+// VWAP holds dependencies to calculate the on-demand VWAP
 type VWAP struct {
 	provider Provider
 	notifier Notifier
@@ -40,17 +40,17 @@ func (v *VWAP) WithMaxTradings(max int) {
 	}()
 
 	for trading := range ch {
-		if _, ok := operations[trading.ProductID]; !ok {
-			operations[trading.ProductID] = make([]domain.Trading, 0)
+		if _, ok := operations[trading.Pair]; !ok {
+			operations[trading.Pair] = make([]domain.Trading, 0)
 		}
 
-		operations[trading.ProductID] = append(operations[trading.ProductID], trading)
+		operations[trading.Pair] = append(operations[trading.Pair], trading)
 
-		if (max > 0) && (len(operations[trading.ProductID]) > max) {
-			operations[trading.ProductID] = removeTradingByIndex(operations[trading.ProductID], 0)
+		if (max > 0) && (len(operations[trading.Pair]) > max) {
+			operations[trading.Pair] = removeTradingByIndex(operations[trading.Pair], 0)
 		}
 
-		v.notifier.Notify(trading, vwap(operations[trading.ProductID]))
+		v.notifier.Notify(trading, vwap(operations[trading.Pair]))
 	}
 }
 
@@ -66,9 +66,17 @@ func vwap(tradings []domain.Trading) float64 {
 	var sumPriceTimesVolume float64
 	var sumVolume float64
 
+	if (tradings == nil) || (len(tradings) == 0) {
+		return 0
+	}
+
 	for _, v := range tradings {
 		sumPriceTimesVolume += v.Price * v.Share
 		sumVolume += v.Share
+	}
+
+	if sumVolume == 0 {
+		return 0
 	}
 
 	return sumPriceTimesVolume / sumVolume

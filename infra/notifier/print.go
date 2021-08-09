@@ -6,7 +6,7 @@ import (
 	"github.com/tonytcb/simple-vwap-calculation-engine/domain"
 )
 
-// Print holds data to execute the print notification
+// Print contains dependencies to execute the print notification
 type Print struct {
 }
 
@@ -18,9 +18,10 @@ func NewPrint() *Print {
 // Notify sends the notification
 func (p Print) Notify(trading domain.Trading, f float64) error {
 	fmt.Printf(
-		"[%s] trading-id=%d | trading-price=%f | vwap=%f\n",
-		trading.ProductID,
+		"[%s] trading-id=%d | trading-share=%f | trading-price=%f | vwap=%f\n",
+		trading.Pair,
 		trading.ID,
+		trading.Share,
 		trading.Price,
 		f,
 	)
