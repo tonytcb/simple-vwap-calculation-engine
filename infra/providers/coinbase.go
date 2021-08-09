@@ -10,9 +10,13 @@ import (
 )
 
 const (
-	websocketEndpoint    = "wss://ws-feed.pro.coinbase.com"
-	messageSubscribeType = "subscribe"
-	matchesChannelName   = "matches"
+	websocketEndpoint = "wss://ws-feed.pro.coinbase.com"
+
+	matchesChannelName = "matches"
+
+	messageSubscribeType     = "subscribe"
+	messageSubscriptionsType = "subscriptions"
+	messageErrorType         = "error"
 )
 
 type coinbaseChannel struct {
@@ -87,13 +91,13 @@ func (c Coinbase) Pull(ch chan domain.Trading) error {
 			return errors.Wrap(err, "error to read message from websocket")
 		}
 
-		if message.Type == "error" {
+		if message.Type == messageErrorType {
 			close(ch)
 			return fmt.Errorf("error message: %v", message)
 		}
 
-		if message.Type == "subscriptions" {
-			// ignore subscription message type
+		if message.Type == messageSubscriptionsType {
+			// ignore subscriptions message type
 			continue
 		}
 

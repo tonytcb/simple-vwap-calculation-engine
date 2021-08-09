@@ -1,5 +1,6 @@
 package domain
 
+// Currency defines the currency behaviour
 type Currency struct {
 	Name  string
 	Alias string

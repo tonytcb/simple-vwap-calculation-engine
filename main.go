@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"os"
+	"strconv"
 
 	"github.com/tonytcb/simple-vwap-calculation-engine/domain"
 	"github.com/tonytcb/simple-vwap-calculation-engine/infra/notifier"
@@ -29,5 +31,20 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	services.NewVWAP(coinbaseProvider, notifier.NewPrint()).WithMaxTradings(defaultMaxTradings)
+	var max = maxTradingsParameter()
+
+	services.NewVWAP(coinbaseProvider, notifier.NewPrint()).WithMaxTradings(max)
+}
+
+func maxTradingsParameter() int {
+	if os.Args[1] == "" {
+		return defaultMaxTradings
+	}
+
+	v, err := strconv.Atoi(os.Args[1])
+	if err != nil {
+		return defaultMaxTradings
+	}
+
+	return v
 }
