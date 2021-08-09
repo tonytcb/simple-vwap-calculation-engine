@@ -6,6 +6,12 @@ import (
 	"github.com/tonytcb/simple-vwap-calculation-engine/domain"
 )
 
+// Provider defines the behaviour to send and receive data from some data source
+type Provider interface {
+	Subscribe([]domain.TradingPair) error
+	Pull(chan domain.Trading) error
+}
+
 // Notifier defines the behaviour to send a notification
 type Notifier interface {
 	Notify(domain.Trading, float64) error
@@ -13,12 +19,12 @@ type Notifier interface {
 
 // VWAP holds dependencies to calculate the VWAP on-demand
 type VWAP struct {
-	provider domain.Provider
+	provider Provider
 	notifier Notifier
 }
 
 // NewVWAP builds a new VWAP struct
-func NewVWAP(provider domain.Provider, notifier Notifier) *VWAP {
+func NewVWAP(provider Provider, notifier Notifier) *VWAP {
 	return &VWAP{provider: provider, notifier: notifier}
 }
 
