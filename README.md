@@ -27,9 +27,9 @@ For test purposes, it's only available [Coinbase](https://docs.pro.coinbase.com/
 
 ## How to run
 
-With docker you can run `make docker-run MAX_TRADINGS=100`.
+With docker you can run `make docker-run`.
 
-With go installed in your local environment: `go run`
+With go installed in your local environment: `go run .`
 
 _MAX_TRADINGS is equals to 200 as default value._
 
