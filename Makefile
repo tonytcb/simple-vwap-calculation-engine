@@ -6,7 +6,7 @@ docker-build:
 	- docker build -t ${APP_IMAGE_NAME} .
 
 docker-run: docker-build
-	- docker run -it ${APP_IMAGE_NAME} go run .
+	- docker run -it ${APP_IMAGE_NAME} go run . ${MAX_TRADINGS}
 
 docker-tests: docker-build
 	- docker run -it ${APP_IMAGE_NAME} go test -race -v ./...

@@ -8,7 +8,7 @@ import (
 	"github.com/tonytcb/simple-vwap-calculation-engine/domain"
 	"github.com/tonytcb/simple-vwap-calculation-engine/infra/notifier"
 	"github.com/tonytcb/simple-vwap-calculation-engine/infra/providers"
-	"github.com/tonytcb/simple-vwap-calculation-engine/services"
+	"github.com/tonytcb/simple-vwap-calculation-engine/usecases"
 )
 
 const defaultMaxTradings = 200
@@ -33,7 +33,7 @@ func main() {
 
 	var max = maxTradingsParameter()
 
-	services.NewVWAP(coinbaseProvider, notifier.NewPrint()).WithMaxTradings(max)
+	usecases.NewVWAP(coinbaseProvider, notifier.NewPrint()).CalculateWithMaxTradings(max)
 }
 
 func maxTradingsParameter() int {

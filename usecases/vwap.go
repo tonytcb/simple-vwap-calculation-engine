@@ -1,4 +1,4 @@
-package services
+package usecases
 
 import (
 	"log"
@@ -28,8 +28,8 @@ func NewVWAP(provider Provider, notifier Notifier) *VWAP {
 	return &VWAP{provider: provider, notifier: notifier}
 }
 
-// WithMaxTradings calculates the volume-weighted average price
-func (v *VWAP) WithMaxTradings(max int) {
+// CalculateWithMaxTradings calculates the volume-weighted average price
+func (v *VWAP) CalculateWithMaxTradings(max int) {
 	var ch = make(chan domain.Trading)
 	var operations = map[string][]domain.Trading{}
 

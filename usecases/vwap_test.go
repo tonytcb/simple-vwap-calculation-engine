@@ -1,4 +1,4 @@
-package services
+package usecases
 
 import (
 	"testing"
@@ -112,7 +112,7 @@ func TestVWAP_WithMaxTradings(t *testing.T) {
 		provider: providerMock{tradings: tradingsMock},
 		notifier: notifierMock{ch: results},
 	}
-	go vwap.WithMaxTradings(0)
+	go vwap.CalculateWithMaxTradings(0)
 
 	for got := range results {
 		want := expected[i]
