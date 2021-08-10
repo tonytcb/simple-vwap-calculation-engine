@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/tonytcb/simple-vwap-calculation-engine/domain"
@@ -97,13 +98,16 @@ func Test_vwap(t *testing.T) {
 
 func TestVWAP_WithMaxTradings(t *testing.T) {
 	var (
-		tradingsMock = []domain.Trading{
-			{Share: 0.00217105, Price: 45900.01},
-			{Share: 0.03, Price: 45900},
-			{Share: 0.00208368, Price: 45900.01},
-			{Share: 0.08877488, Price: 45900},
+		bitcoinToDollarPair  = fmt.Sprintf("%s-%s", domain.Bitcoin.Alias, domain.Dollar.Alias)
+		ethereumToDollarPair = fmt.Sprintf("%s-%s", domain.Ethereum.Alias, domain.Dollar.Alias)
+		tradingsMock         = []domain.Trading{
+			{Share: 0.00217105, Price: 45900.01, Pair: bitcoinToDollarPair},
+			{Share: 0.03, Price: 45900, Pair: bitcoinToDollarPair},
+			{Share: 0.00208368, Price: 45900.01, Pair: bitcoinToDollarPair},
+			{Share: 0.08877488, Price: 45900, Pair: bitcoinToDollarPair},
+			{Share: 0.1, Price: 10000, Pair: ethereumToDollarPair},
 		}
-		expected = []float64{45900.01, 45900.00067484586, 45900.001242085404, 45900.00034582976}
+		expected = []float64{45900.01, 45900.00067484586, 45900.001242085404, 45900.00034582976, 10000}
 		results  = make(chan float64)
 		i        = 0
 	)
