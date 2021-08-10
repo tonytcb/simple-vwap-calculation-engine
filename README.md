@@ -27,10 +27,6 @@ For test purposes, it's only available [Coinbase](https://docs.pro.coinbase.com/
 
 ## How to run
 
-With docker you can run `make docker-run`.
+With docker you can start the application running `make docker-run` or use `make run`.
 
-With go installed in your local environment: `go run .`
-
-_MAX_TRADINGS is equals to 200 as default value._
-
-To run all test you can run `make docker-tests` or `make tests`.
+To run all tests you can run `make docker-tests` or `make tests`.
