@@ -30,3 +30,8 @@ For test purposes, it's only available [Coinbase](https://docs.pro.coinbase.com/
 With docker you can start the application running `make docker-run` or use `make run`.
 
 To run all tests you can run `make docker-tests` or `make tests`.
+
+## Todo
+
+- Avoiding perform math counts with float64. Instead, would be better to use integer numbers and avoid floating point issues.
+- Improving the VWAP algorithm to avoid go over the full slice every time to execute the calculation. 
