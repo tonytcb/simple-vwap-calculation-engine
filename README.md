@@ -2,7 +2,7 @@
 
 ## What is VWAP
 
-In finance, volume-weighted average price (VWAP) is the ratio of the value traded to total volume traded over a particular time horizon (usually one day). It is a measure of the average price at which a stock is traded over the trading horizon. [Wikipedia](https://en.wikipedia.org/wiki/Volume-weighted_average_price)
+In finance, volume-weighted average price (VWAP) is the ratio of the value traded to total volume traded over a particular time horizon (usually one day). It is a measure of the average price at which a stock is traded over the trading horizon ([Wikipedia](https://en.wikipedia.org/wiki/Volume-weighted_average_price)).
 
 ## Goals
 
