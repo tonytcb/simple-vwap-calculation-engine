@@ -16,22 +16,26 @@ const defaultMaxTradings = 200
 func main() {
 	log.Println("========== Starting simple-vwap app")
 
+	var max = maxTradingsParameter()
+
+	ch := make(chan int)
+
+	go startVwap(domain.NewTradingPair(domain.Bitcoin, domain.Dollar), max)
+	go startVwap(domain.NewTradingPair(domain.Ethereum, domain.Dollar), max)
+	go startVwap(domain.NewTradingPair(domain.Ethereum, domain.Bitcoin), max)
+
+	<-ch
+}
+
+func startVwap(pair domain.TradingPair, max int) {
 	coinbaseProvider, err := providers.NewCoinbase()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	err = coinbaseProvider.Subscribe([]domain.TradingPair{
-		domain.NewTradingPair(domain.Bitcoin, domain.Dollar),
-		domain.NewTradingPair(domain.Ethereum, domain.Dollar),
-		domain.NewTradingPair(domain.Ethereum, domain.Bitcoin),
-	})
-
-	if err != nil {
+	if err = coinbaseProvider.Subscribe([]domain.TradingPair{pair}); err != nil {
 		log.Fatalln(err)
 	}
-
-	var max = maxTradingsParameter()
 
 	usecases.NewVWAP(coinbaseProvider, notifier.NewPrint()).CalculateWithMaxTradings(max)
 }
