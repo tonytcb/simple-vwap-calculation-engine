@@ -32,3 +32,5 @@ With docker you can run `make docker-run MAX_TRADINGS=100`.
 With go installed in your local environment: `go run . 100`
 
 _MAX_TRADINGS is equals to 200 as default value._
+
+To run all test you can run `make docker-tests` or `make tests`.
