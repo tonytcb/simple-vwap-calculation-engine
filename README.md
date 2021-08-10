@@ -12,7 +12,7 @@ The algorithm runs on-demand, meaning that the VWAP is recalculated after every 
 
 ## Design Solution
 
-The application architecture follows the principles of the **Clean Architecture**, originally described by Robert C. Martin. The foundation of this kind of architecture if the dependency injection, producing systems that are independent of external agents, testable and easier to maintain.
+The application architecture follows the principles of the **Clean Architecture**, originally described by Robert C. Martin. The foundation of this kind of architecture is the dependency injection, producing systems that are independent of external agents, testable and easier to maintain.
 You can read more about Clean Architecture [here](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
 To start the on-demand VWAP calculation, it is required to inform the tradings provider and the structure to stream the VWAP result.
