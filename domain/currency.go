@@ -7,16 +7,19 @@ type Currency struct {
 }
 
 var (
+	// Ethereum represents the ethereum currency
 	Ethereum = Currency{
 		Name:  "Ethereum",
 		Alias: "ETH",
 	}
 
+	// Bitcoin represents the bitcoin currency
 	Bitcoin = Currency{
 		Name:  "Bitcoin",
 		Alias: "BTC",
 	}
 
+	// Dollar represents the dollar currency
 	Dollar = Currency{
 		Name:  "Dollar",
 		Alias: "USD",
