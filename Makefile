@@ -16,3 +16,10 @@ tests:
 
 run:
 	go run .
+
+lint: ## Lint with golangci-lint
+	@docker run --rm -it -v $(PWD):/app -w /app golangci/golangci-lint:v1.39-alpine \
+	golangci-lint run \
+	--timeout 5m0s \
+	--exclude-use-default=false \
+	--enable=prealloc

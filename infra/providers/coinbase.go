@@ -38,7 +38,7 @@ type coinbaseResponseMessage struct {
 	Size      string    `json:"size"`
 	Price     string    `json:"price"`
 	Side      string    `json:"side"`
-	Time      time.Time `json:"time,string"`
+	Time      time.Time `json:"time"`
 }
 
 // Coinbase defined the Coinbase trading provider

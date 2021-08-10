@@ -50,7 +50,10 @@ func (v *VWAP) CalculateWithMaxTradings(max int) {
 			operations[trading.Pair] = removeTradingByIndex(operations[trading.Pair], 0)
 		}
 
-		v.notifier.Notify(trading, vwap(operations[trading.Pair]))
+		err := v.notifier.Notify(trading, vwap(operations[trading.Pair]))
+		if err != nil {
+			log.Println("error to send VWAP notification:", err.Error())
+		}
 	}
 }
 
