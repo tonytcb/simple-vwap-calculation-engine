@@ -30,8 +30,12 @@ func NewVWAP(provider Provider, notifier Notifier) *VWAP {
 
 // CalculateWithMaxTradings calculates the volume-weighted average price
 func (v *VWAP) CalculateWithMaxTradings(max int) {
-	var ch = make(chan domain.Trading)
-	var operations = map[string][]domain.Trading{}
+	var (
+		ch                  = make(chan domain.Trading)
+		operations          = map[string]*domain.TradingQueue{}
+		sumPriceTimesVolume = map[string]float64{}
+		sumVolume           = map[string]float64{}
+	)
 
 	go func() {
 		if err := v.provider.Pull(ch); err != nil {
@@ -41,46 +45,33 @@ func (v *VWAP) CalculateWithMaxTradings(max int) {
 
 	for trading := range ch {
 		if _, ok := operations[trading.Pair]; !ok {
-			operations[trading.Pair] = make([]domain.Trading, 0)
+			operations[trading.Pair] = domain.NewTradingQueue()
 		}
 
-		operations[trading.Pair] = append(operations[trading.Pair], trading)
-
-		if (max > 0) && (len(operations[trading.Pair]) > max) {
-			operations[trading.Pair] = removeTradingByIndex(operations[trading.Pair], 0)
+		if _, ok := sumPriceTimesVolume[trading.Pair]; !ok {
+			sumPriceTimesVolume[trading.Pair] = 0
 		}
 
-		err := v.notifier.Notify(trading, vwap(operations[trading.Pair]))
-		if err != nil {
+		if _, ok := sumVolume[trading.Pair]; !ok {
+			sumVolume[trading.Pair] = 0
+		}
+
+		operations[trading.Pair].Enqueue(trading)
+
+		sumPriceTimesVolume[trading.Pair] += trading.Price * trading.Share
+		sumVolume[trading.Pair] += trading.Share
+
+		if (max > 0) && (operations[trading.Pair].Len() > max) {
+			var first = operations[trading.Pair].Dequeue()
+
+			sumPriceTimesVolume[trading.Pair] -= first.Price * first.Share
+			sumVolume[trading.Pair] -= first.Share
+		}
+
+		var result = sumPriceTimesVolume[trading.Pair] / sumVolume[trading.Pair]
+
+		if err := v.notifier.Notify(trading, result); err != nil {
 			log.Println("error to send VWAP notification:", err.Error())
 		}
 	}
-}
-
-func removeTradingByIndex(a []domain.Trading, i int) []domain.Trading {
-	copy(a[i:], a[i+1:])
-	a[len(a)-1] = domain.Trading{}
-	a = a[:len(a)-1]
-
-	return a
-}
-
-func vwap(tradings []domain.Trading) float64 {
-	var sumPriceTimesVolume float64
-	var sumVolume float64
-
-	if (tradings == nil) || (len(tradings) == 0) {
-		return 0
-	}
-
-	for _, v := range tradings {
-		sumPriceTimesVolume += v.Price * v.Share
-		sumVolume += v.Share
-	}
-
-	if sumVolume == 0 {
-		return 0
-	}
-
-	return sumPriceTimesVolume / sumVolume
 }
